@@ -32,4 +32,4 @@ client.on('connect', function (connection) {
     sendNumber();
 });
 
-client.connect('wss://video-party.gastbob40.ovh/', 'echo-protocol');
+client.connect('ws://video-party.gastbob40.ovh/', 'echo-protocol');
