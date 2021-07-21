@@ -16,11 +16,12 @@ var server = http.createServer(function (request, response) {
         })
         .on("end", () => {
             response.setHeader('Content-Type', 'application/json');
+            response.setHeader('Access-Control-Allow-Origin', '*');
 
             if (request.url === "/rooms/" && request.method === 'POST') {
                 try {
                     const room = new Room(JSON.parse(data)['video']);
-                    rooms.push(room);
+                    rooms[room.code] = room;
                     response.statusCode = 201;
                     response.end(JSON.stringify(room));
                 } catch (e) {
@@ -40,7 +41,7 @@ wsServer = new WebSocketServer({
     autoAcceptConnections: false
 });
 
-let rooms = [];
+let rooms = {};
 
 
 wsServer.on('request', function (request) {
@@ -49,17 +50,28 @@ wsServer.on('request', function (request) {
     const connection = request.accept('echo-protocol', request.origin);
     connection.on('message', function (message) {
         if (message.type === 'utf8') {
-            // clients.forEach(x => x.sendUTF(message.utf8Data));
+            const command = JSON.parse(message.utf8Data);
+            const code = command['code'];
+
+            if (rooms[code] !== undefined) {
+                if (command['command'] === "join") {
+                    rooms[code].members.push(connection);
+                }
+
+                rooms[code].members.forEach(x => x.sendUTF(message.utf8Data));
+            }
+
             console.log('Received Message: ' + message.utf8Data);
         }
     });
 
     connection.on('close', function (reasonCode, description) {
         console.log((new Date()) + ' Peer ' + connection.remoteAddress + ' disconnected.');
+        // TODO REMOTE CONNECTION
         // clients = clients.filter(x => x !== connection);
-        console.log(clients.length)
     });
 
 
-    // clients.push(connection);
-});
+// clients.push(connection);
+})
+;
