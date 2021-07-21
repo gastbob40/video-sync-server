@@ -70,8 +70,4 @@ wsServer.on('request', function (request) {
         // TODO REMOTE CONNECTION
         // clients = clients.filter(x => x !== connection);
     });
-
-
-// clients.push(connection);
-})
-;
+});
