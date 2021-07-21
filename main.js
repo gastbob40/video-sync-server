@@ -36,7 +36,12 @@ const server = http.createServer(function (request, response) {
                     response.end();
                 } else {
                     response.statusCode = 200;
-                    response.end((JSON.stringify(rooms[code])));
+                    response.end((JSON.stringify(rooms[code], (key, value) => {
+                        if (key === 'members')
+                            return undefined;
+
+                        return value;
+                    })));
                 }
             } else {
                 response.statusCode = 404;
