@@ -28,6 +28,19 @@ const server = http.createServer(function (request, response) {
                     response.statusCode = 400;
                     response.end();
                 }
+            } else if (/^\/rooms\/[0-9]+\/$/.test(request.url) && request.method === 'GET') {
+                const code = request.url.match('[0-9]+')[0];
+
+                if (rooms[code] === undefined) {
+                    response.statusCode = 404;
+                    response.end();
+                } else {
+                    response.statusCode = 200;
+                    response.end((JSON.stringify(rooms[code])));
+                }
+            } else {
+                response.statusCode = 404;
+                response.end();
             }
         })
 });
