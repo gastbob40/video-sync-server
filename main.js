@@ -2,10 +2,10 @@
 
 const Room = require('./src/room');
 
-var WebSocketServer = require('websocket').server;
-var http = require('http');
+const WebSocketServer = require('websocket').server;
+const http = require('http');
 
-var server = http.createServer(function (request, response) {
+const server = http.createServer(function (request, response) {
     console.log((new Date()) + ' Received request for ' + request.url);
 
     let data = "";
